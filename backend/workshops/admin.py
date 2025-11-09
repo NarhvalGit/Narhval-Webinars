@@ -502,7 +502,11 @@ class InhouseTrainingPageAdmin(admin.ModelAdmin):
 
     def has_add_permission(self, request):
         # Singleton - er kan maar 1 instance zijn
-        return not InhouseTrainingPage.objects.exists()
+        try:
+            return not InhouseTrainingPage.objects.exists()
+        except Exception:
+            # Als de tabel nog niet bestaat of er is een schema mismatch, sta toevoegen toe
+            return True
 
     def has_delete_permission(self, request, obj=None):
         # Singleton mag niet verwijderd worden
