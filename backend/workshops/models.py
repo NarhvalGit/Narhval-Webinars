@@ -390,96 +390,33 @@ class NewsletterSubscriber(models.Model):
 
 class InhouseTrainingPage(models.Model):
     """Singleton model voor Inhouse Training pagina content"""
-    
-    # Banner sectie (homepage)
+
+    # HTML content veld voor de hele pagina
+    content = models.TextField(
+        'Pagina Inhoud',
+        default='',
+        blank=True,
+        help_text='HTML content voor de inhouse trainingen pagina. Je kunt hier volledige HTML gebruiken voor opmaak.'
+    )
+
+    # Banner sectie (homepage) - behouden voor homepage weergave
     banner_title = models.CharField(
-        'Banner Titel',
+        'Banner Titel (Homepage)',
         max_length=200,
         default='Op zoek naar opleidingen op maat voor jouw team?',
         help_text='Titel die getoond wordt op de homepage'
     )
     banner_description = models.TextField(
-        'Banner Beschrijving',
-        default='Ontdek onze inhouse trainingen: volledig aangepast aan de behoeften van jouw organisatie. Van AI-geletterdheid tot geavanceerde workflow automation - wij brengen de kennis naar jullie kantoor of online omgeving.',
+        'Banner Beschrijving (Homepage)',
+        default='Ontdek onze inhouse trainingen: volledig aangepast aan de behoeften van jouw organisatie.',
         help_text='Korte beschrijving op de homepage'
     )
     banner_button_text = models.CharField(
-        'Banner Knop Tekst',
+        'Banner Knop Tekst (Homepage)',
         max_length=50,
         default='Ontdek Inhouse Opleidingen'
     )
-    
-    # Detail pagina content
-    page_title = models.CharField(
-        'Pagina Titel',
-        max_length=200,
-        default='Inhouse Trainingen op Maat'
-    )
-    
-    intro_text = models.TextField(
-        'Introductie Tekst',
-        default='Bij Narhval Learning begrijpen we dat elke organisatie uniek is. Daarom bieden wij volledig op maat gemaakte AI-opleidingen aan die perfect aansluiten bij jouw bedrijfsdoelen en uitdagingen.'
-    )
-    
-    benefits_title = models.CharField(
-        'Voordelen Titel',
-        max_length=200,
-        default='Waarom kiezen voor inhouse training?'
-    )
-    
-    benefits = models.JSONField(
-        'Voordelen Lijst',
-        default=list,
-        blank=True,
-        help_text='Lijst van voordelen (wordt automatisch aangemaakt bij eerste save)'
-    )
-    
-    process_title = models.CharField(
-        'Proces Titel',
-        max_length=200,
-        default='Hoe werken we samen?'
-    )
-    
-    process_description = models.TextField(
-        'Proces Beschrijving',
-        default='We volgen een gestructureerde aanpak om ervoor te zorgen dat de training perfect aansluit bij jullie behoeften:'
-    )
-    
-    process_steps = models.JSONField(
-        'Proces Stappen',
-        default=list,
-        blank=True,
-        help_text='Lijst van processtappen (wordt automatisch aangemaakt bij eerste save)'
-    )
-    
-    topics_title = models.CharField(
-        'Onderwerpen Titel',
-        max_length=200,
-        default='Mogelijke trainingsonderwerpen'
-    )
-    
-    topics_description = models.TextField(
-        'Onderwerpen Beschrijving',
-        default='Wij kunnen trainingen verzorgen over diverse AI-gerelateerde onderwerpen, waaronder:'
-    )
-    
-    cta_title = models.CharField(
-        'CTA Titel',
-        max_length=200,
-        default='Klaar om te starten?'
-    )
-    
-    cta_description = models.TextField(
-        'CTA Beschrijving',
-        default='Neem contact met ons op voor een vrijblijvend gesprek over de mogelijkheden voor jouw organisatie.'
-    )
-    
-    cta_button_text = models.CharField(
-        'CTA Knop Tekst',
-        max_length=50,
-        default='Neem Contact Op'
-    )
-    
+
     # Metadata
     is_active = models.BooleanField('Actief', default=True)
     updated_at = models.DateTimeField('Laatst gewijzigd', auto_now=True)
@@ -494,67 +431,153 @@ class InhouseTrainingPage(models.Model):
     def save(self, *args, **kwargs):
         # Singleton pattern - er mag maar 1 instance zijn
         self.pk = 1
-        
-        # Vul default voordelen in als leeg
-        if not self.benefits:
-            self.benefits = [
-                {
-                    'icon': 'bi-building',
-                    'title': 'Op locatie of online',
-                    'description': 'Wij komen naar jullie toe, of verzorgen de training volledig online via Teams.'
-                },
-                {
-                    'icon': 'bi-people-fill',
-                    'title': 'Voor het hele team',
-                    'description': 'Train meerdere medewerkers tegelijk tegen een vast tarief.'
-                },
-                {
-                    'icon': 'bi-sliders',
-                    'title': 'Volledig op maat',
-                    'description': 'Content en voorbeelden specifiek afgestemd op jullie sector en uitdagingen.'
-                },
-                {
-                    'icon': 'bi-calendar-check',
-                    'title': 'Flexibele planning',
-                    'description': 'Kies zelf de data en tijdstippen die het beste passen bij jullie team.'
-                },
-                {
-                    'icon': 'bi-award',
-                    'title': 'Certificaat',
-                    'description': 'Deelnemers ontvangen een certificaat na afloop van de training.'
-                },
-                {
-                    'icon': 'bi-headset',
-                    'title': 'Nazorg & support',
-                    'description': 'Ook na de training staan we klaar voor vragen en ondersteuning.'
-                }
-            ]
-        
-        # Vul default processtappen in als leeg
-        if not self.process_steps:
-            self.process_steps = [
-                {
-                    'number': '01',
-                    'title': 'Intake gesprek',
-                    'description': 'We bespreken jullie doelen, uitdagingen en gewenste outcomes.'
-                },
-                {
-                    'number': '02',
-                    'title': 'Programma op maat',
-                    'description': 'We stellen een trainingsplan samen dat perfect aansluit bij jullie behoeften.'
-                },
-                {
-                    'number': '03',
-                    'title': 'Training verzorgen',
-                    'description': 'Onze ervaren trainers verzorgen de sessies met praktische voorbeelden uit jullie sector.'
-                },
-                {
-                    'number': '04',
-                    'title': 'Follow-up & evaluatie',
-                    'description': 'We evalueren de resultaten en bieden nazorg waar nodig.'
-                }
-            ]
-        
+
+        # Vul default content in als leeg
+        if not self.content:
+            self.content = '''
+<div class="bg-gradient-to-r from-blue-600 to-indigo-700 text-white py-20 mb-12">
+    <div class="container mx-auto px-4">
+        <div class="max-w-4xl mx-auto text-center">
+            <h1 class="text-4xl md:text-5xl font-bold mb-6">Inhouse Trainingen op Maat</h1>
+            <p class="text-xl text-blue-100">
+                Maatwerk opleidingen speciaal afgestemd op jouw organisatie
+            </p>
+        </div>
+    </div>
+</div>
+
+<div class="container mx-auto px-4 py-8 mb-12">
+    <div class="max-w-4xl mx-auto">
+
+        <!-- Introductie -->
+        <div class="bg-white rounded-lg shadow-lg p-8 mb-8">
+            <div class="prose prose-lg max-w-none">
+                <p>Bij Narhval Learning begrijpen we dat elke organisatie uniek is. Daarom bieden wij volledig op maat gemaakte AI-opleidingen aan die perfect aansluiten bij jouw bedrijfsdoelen en uitdagingen.</p>
+            </div>
+        </div>
+
+        <!-- Benefits Section -->
+        <div class="mb-12">
+            <h2 class="text-3xl font-bold mb-8 text-center">Waarom kiezen voor inhouse training?</h2>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-blue-50 rounded-lg p-6 border-l-4 border-blue-600">
+                    <div class="flex items-start">
+                        <i class="bi bi-building text-4xl text-blue-600 mr-4 flex-shrink-0"></i>
+                        <div>
+                            <h3 class="font-bold text-lg mb-2">Op locatie of online</h3>
+                            <p class="text-gray-700">Wij komen naar jullie toe, of verzorgen de training volledig online via Teams.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-blue-50 rounded-lg p-6 border-l-4 border-blue-600">
+                    <div class="flex items-start">
+                        <i class="bi bi-people-fill text-4xl text-blue-600 mr-4 flex-shrink-0"></i>
+                        <div>
+                            <h3 class="font-bold text-lg mb-2">Voor het hele team</h3>
+                            <p class="text-gray-700">Train meerdere medewerkers tegelijk tegen een vast tarief.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-blue-50 rounded-lg p-6 border-l-4 border-blue-600">
+                    <div class="flex items-start">
+                        <i class="bi bi-sliders text-4xl text-blue-600 mr-4 flex-shrink-0"></i>
+                        <div>
+                            <h3 class="font-bold text-lg mb-2">Volledig op maat</h3>
+                            <p class="text-gray-700">Content en voorbeelden specifiek afgestemd op jullie sector en uitdagingen.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-blue-50 rounded-lg p-6 border-l-4 border-blue-600">
+                    <div class="flex items-start">
+                        <i class="bi bi-calendar-check text-4xl text-blue-600 mr-4 flex-shrink-0"></i>
+                        <div>
+                            <h3 class="font-bold text-lg mb-2">Flexibele planning</h3>
+                            <p class="text-gray-700">Kies zelf de data en tijdstippen die het beste passen bij jullie team.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-blue-50 rounded-lg p-6 border-l-4 border-blue-600">
+                    <div class="flex items-start">
+                        <i class="bi bi-award text-4xl text-blue-600 mr-4 flex-shrink-0"></i>
+                        <div>
+                            <h3 class="font-bold text-lg mb-2">Certificaat</h3>
+                            <p class="text-gray-700">Deelnemers ontvangen een certificaat na afloop van de training.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-blue-50 rounded-lg p-6 border-l-4 border-blue-600">
+                    <div class="flex items-start">
+                        <i class="bi bi-headset text-4xl text-blue-600 mr-4 flex-shrink-0"></i>
+                        <div>
+                            <h3 class="font-bold text-lg mb-2">Nazorg & support</h3>
+                            <p class="text-gray-700">Ook na de training staan we klaar voor vragen en ondersteuning.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Process Steps -->
+        <div class="bg-gray-50 rounded-lg p-8 mb-12">
+            <h2 class="text-3xl font-bold mb-4 text-center">Hoe werken we samen?</h2>
+            <p class="text-center text-gray-600 mb-8">We volgen een gestructureerde aanpak om ervoor te zorgen dat de training perfect aansluit bij jullie behoeften:</p>
+            <div class="space-y-6">
+                <div class="flex items-start">
+                    <div class="bg-blue-600 text-white rounded-full w-12 h-12 flex items-center justify-center font-bold mr-4 flex-shrink-0 text-lg">
+                        01
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="font-bold text-lg mb-2">Intake gesprek</h3>
+                        <p class="text-gray-700">We bespreken jullie doelen, uitdagingen en gewenste outcomes.</p>
+                    </div>
+                </div>
+                <div class="flex items-start">
+                    <div class="bg-blue-600 text-white rounded-full w-12 h-12 flex items-center justify-center font-bold mr-4 flex-shrink-0 text-lg">
+                        02
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="font-bold text-lg mb-2">Programma op maat</h3>
+                        <p class="text-gray-700">We stellen een trainingsplan samen dat perfect aansluit bij jullie behoeften.</p>
+                    </div>
+                </div>
+                <div class="flex items-start">
+                    <div class="bg-blue-600 text-white rounded-full w-12 h-12 flex items-center justify-center font-bold mr-4 flex-shrink-0 text-lg">
+                        03
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="font-bold text-lg mb-2">Training verzorgen</h3>
+                        <p class="text-gray-700">Onze ervaren trainers verzorgen de sessies met praktische voorbeelden uit jullie sector.</p>
+                    </div>
+                </div>
+                <div class="flex items-start">
+                    <div class="bg-blue-600 text-white rounded-full w-12 h-12 flex items-center justify-center font-bold mr-4 flex-shrink-0 text-lg">
+                        04
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="font-bold text-lg mb-2">Follow-up & evaluatie</h3>
+                        <p class="text-gray-700">We evalueren de resultaten en bieden nazorg waar nodig.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CTA Section -->
+        <div class="bg-gradient-to-r from-blue-600 to-indigo-700 text-white rounded-lg p-8 text-center">
+            <h2 class="text-3xl font-bold mb-4">Klaar om te starten?</h2>
+            <p class="text-xl text-blue-100 mb-8">
+                Neem contact met ons op voor een vrijblijvend gesprek over de mogelijkheden voor jouw organisatie.
+            </p>
+            <a href="/contact/" class="inline-block bg-white text-blue-600 px-8 py-4 rounded-lg font-bold text-lg hover:bg-blue-50 transition-colors shadow-lg">
+                <svg class="w-6 h-6 inline-block mr-2 -mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                </svg>
+                Neem Contact Op
+            </a>
+        </div>
+    </div>
+</div>
+'''
+
         super().save(*args, **kwargs)
 
     @classmethod

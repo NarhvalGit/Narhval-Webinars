@@ -391,18 +391,12 @@ def newsletter_subscribe(request):
 
 def inhouse_training(request):
     """
-    Inhouse Training pagina met bewerkbare content
+    Inhouse Training pagina met bewerkbare HTML content
     """
     # Haal de singleton instance op
     page_content = InhouseTrainingPage.get_instance()
-    
-    # Haal ook de categorieën op voor onderwerpen sectie
-    categories = Category.objects.annotate(
-        active_workshop_count=Count('workshops', filter=Q(workshops__is_active=True))
-    ).filter(active_workshop_count__gt=0)
-    
+
     context = {
         'page': page_content,
-        'categories': categories,
     }
     return render(request, 'workshops/inhouse_training.html', context)
