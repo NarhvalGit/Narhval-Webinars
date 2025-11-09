@@ -460,37 +460,50 @@ class NewsletterSubscriberAdmin(admin.ModelAdmin):
 class InhouseTrainingPageAdmin(admin.ModelAdmin):
     fieldsets = (
         ('Homepage Banner', {
-            'fields': ('banner_title', 'banner_description', 'banner_button_text')
+            'fields': ('banner_title', 'banner_description', 'banner_button_text'),
+            'description': 'Deze velden worden getoond op de homepage in de banner sectie.'
         }),
-        ('Detail Pagina - Header', {
-            'fields': ('page_title', 'intro_text')
-        }),
-        ('Detail Pagina - Voordelen', {
-            'fields': ('benefits_title', 'benefits'),
-            'description': 'Voordelen worden automatisch ingevuld bij eerste save. JSON formaat wordt gebruikt voor flexibiliteit.'
-        }),
-        ('Detail Pagina - Proces', {
-            'fields': ('process_title', 'process_description', 'process_steps'),
-            'description': 'Processtappen worden automatisch ingevuld bij eerste save.'
-        }),
-        ('Detail Pagina - Onderwerpen', {
-            'fields': ('topics_title', 'topics_description')
-        }),
-        ('Detail Pagina - Call to Action', {
-            'fields': ('cta_title', 'cta_description', 'cta_button_text')
+        ('Pagina Inhoud', {
+            'fields': ('content',),
+            'description': '''
+                <p><strong>HTML Editor voor Inhouse Training Pagina</strong></p>
+                <p>Gebruik dit veld om de volledige inhoud van de inhouse training pagina op te maken met HTML.</p>
+                <p>Je kunt alle HTML tags gebruiken, inclusief:</p>
+                <ul>
+                    <li>Tailwind CSS classes voor styling (bijv. <code>class="text-3xl font-bold"</code>)</li>
+                    <li>Bootstrap Icons (bijv. <code>&lt;i class="bi bi-building"&gt;&lt;/i&gt;</code>)</li>
+                    <li>Grid layouts, containers, buttons, etc.</li>
+                </ul>
+                <p>De huidige styling volgt het Tailwind CSS framework dat in de rest van de site wordt gebruikt.</p>
+            '''
         }),
         ('Status', {
             'fields': ('is_active', 'updated_at'),
             'classes': ('collapse',)
         }),
     )
-    
+
     readonly_fields = ['updated_at']
-    
+
+    class Media:
+        css = {
+            'all': ('admin/css/inhouse_training_admin.css',)
+        }
+
+    def formfield_for_dbfield(self, db_field, request, **kwargs):
+        """Customize the content field to use a larger textarea"""
+        if db_field.name == 'content':
+            kwargs['widget'] = admin.widgets.AdminTextareaWidget(attrs={
+                'rows': 30,
+                'cols': 120,
+                'style': 'font-family: monospace; font-size: 13px;'
+            })
+        return super().formfield_for_dbfield(db_field, request, **kwargs)
+
     def has_add_permission(self, request):
         # Singleton - er kan maar 1 instance zijn
         return not InhouseTrainingPage.objects.exists()
-    
+
     def has_delete_permission(self, request, obj=None):
         # Singleton mag niet verwijderd worden
         return False
