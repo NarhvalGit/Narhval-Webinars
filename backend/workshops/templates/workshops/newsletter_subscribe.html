@@ -1,0 +1,232 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Nieuwsbrief - Narhval Learning{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-7 mb-4 mb-lg-0">
+                <h1>
+                    Blijf op de hoogte van onze workshops
+                </h1>
+                <p class="lead">
+                    Schrijf je in voor onze nieuwsbrief en ontvang als eerste nieuws over nieuwe workshops, 
+                    speciale aanbiedingen en interessante tips & tricks!
+                </p>
+                <div class="d-flex gap-3">
+                    <a href="#newsletter-form" class="btn btn-light btn-lg">
+                        <i class="bi bi-envelope-heart me-2"></i>Schrijf je in
+                    </a>
+                    <a href="{% url 'workshop_list' %}" class="btn btn-outline-light btn-lg">
+                        <i class="bi bi-arrow-left me-2"></i>Terug naar Workshops
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-5">
+                <div class="hero-stats">
+                    <div class="row text-center">
+                        <div class="col-4">
+                            <div class="stat-item">
+                                <i class="bi bi-people-fill" style="font-size: 2rem; opacity: 0.9;"></i>
+                                <h3>500+</h3>
+                                <p>Abonnees</p>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="stat-item">
+                                <i class="bi bi-envelope-check-fill" style="font-size: 2rem; opacity: 0.9;"></i>
+                                <h3>95%</h3>
+                                <p>Open Rate</p>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="stat-item">
+                                <i class="bi bi-star-fill" style="font-size: 2rem; opacity: 0.9;"></i>
+                                <h3>4.8/5</h3>
+                                <p>Tevredenheid</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Newsletter Form Section -->
+<section class="py-5" id="newsletter-form" style="background-color: var(--primary-notwhite);">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 col-xl-6">
+                <div class="card shadow-lg border-0 rounded-custom">
+                    <div class="card-body p-5">
+                        <div class="text-center mb-4">
+                            <i class="bi bi-envelope-heart text-primary" style="font-size: 3rem;"></i>
+                            <h2 class="fw-bold mt-3">Gratis Inschrijven</h2>
+                            <p class="text-muted">Vul je gegevens in en blijf op de hoogte</p>
+                        </div>
+
+                        <form method="post" action="{% url 'newsletter_subscribe' %}" class="needs-validation" novalidate>
+                            {% csrf_token %}
+                            
+                            <!-- Email Field -->
+                            <div class="mb-4">
+                                <label for="id_email" class="form-label fw-bold">
+                                    <i class="bi bi-envelope me-2"></i>Email Adres *
+                                </label>
+                                <input 
+                                    type="email" 
+                                    class="form-control form-control-lg" 
+                                    id="id_email" 
+                                    name="email"
+                                    placeholder="jouw@email.be"
+                                    required
+                                >
+                                <div class="invalid-feedback">
+                                    Vul een geldig email adres in.
+                                </div>
+                            </div>
+
+                            <!-- First Name Field (Optional) -->
+                            <div class="mb-4">
+                                <label for="id_first_name" class="form-label fw-bold">
+                                    <i class="bi bi-person me-2"></i>Voornaam (optioneel)
+                                </label>
+                                <input 
+                                    type="text" 
+                                    class="form-control form-control-lg" 
+                                    id="id_first_name" 
+                                    name="first_name"
+                                    placeholder="Bijv. Jan"
+                                >
+                                <small class="text-muted">
+                                    Zo kunnen we je persoonlijk aanspreken in onze emails!
+                                </small>
+                            </div>
+
+                            <!-- Privacy Notice -->
+                            <div class="alert alert-info mb-4">
+                                <i class="bi bi-shield-check me-2"></i>
+                                <strong>Privacy gegarandeerd!</strong> 
+                                We respecteren je privacy en spammen je nooit. 
+                                Je kan je op elk moment weer uitschrijven.
+                            </div>
+
+                            <!-- Submit Button -->
+                            <input type="hidden" name="next" value="{% url 'workshop_list' %}">
+                            <button type="submit" class="btn btn-primary btn-lg w-100">
+                                <i class="bi bi-check-circle me-2"></i>Inschrijven voor Nieuwsbrief
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Benefits Section -->
+<section class="py-5" style="background-color: white;">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold">Wat krijg je als nieuwsbrief abonnee?</h2>
+            <p class="text-muted">Ontdek de voordelen van onze nieuwsbrief</p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm rounded-custom">
+                    <div class="card-body text-center p-4">
+                        <div class="mb-3">
+                            <i class="bi bi-calendar-event text-primary" style="font-size: 3rem;"></i>
+                        </div>
+                        <h5 class="fw-bold">Nieuwe Workshops</h5>
+                        <p class="text-muted mb-0">
+                            Wees de eerste om te weten wanneer er nieuwe workshops worden toegevoegd
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm rounded-custom">
+                    <div class="card-body text-center p-4">
+                        <div class="mb-3">
+                            <i class="bi bi-tag text-warning" style="font-size: 3rem;"></i>
+                        </div>
+                        <h5 class="fw-bold">Exclusieve Kortingen</h5>
+                        <p class="text-muted mb-0">
+                            Ontvang speciale kortingscodes en early bird aanbiedingen
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm rounded-custom">
+                    <div class="card-body text-center p-4">
+                        <div class="mb-3">
+                            <i class="bi bi-lightbulb text-success" style="font-size: 3rem;"></i>
+                        </div>
+                        <h5 class="fw-bold">Tips & Inspiratie</h5>
+                        <p class="text-muted mb-0">
+                            Krijg waardevolle tips, tricks en inspiratie voor je projecten
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Stats Section -->
+<section class="py-5" style="background-color: var(--primary-notwhite);">
+    <div class="container">
+        <div class="row text-center g-4">
+            <div class="col-md-4">
+                <div class="p-4">
+                    <i class="bi bi-people-fill text-primary mb-3" style="font-size: 3rem;"></i>
+                    <h3 class="fw-bold">500+</h3>
+                    <p class="text-muted mb-0">Nieuwsbrief Abonnees</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="p-4">
+                    <i class="bi bi-envelope-check-fill text-success mb-3" style="font-size: 3rem;"></i>
+                    <h3 class="fw-bold">95%</h3>
+                    <p class="text-muted mb-0">Open Rate</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="p-4">
+                    <i class="bi bi-star-fill text-warning mb-3" style="font-size: 3rem;"></i>
+                    <h3 class="fw-bold">4.8/5</h3>
+                    <p class="text-muted mb-0">Tevredenheid</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% block extra_js %}
+<script>
+    // Bootstrap form validation
+    (function() {
+        'use strict';
+        var forms = document.querySelectorAll('.needs-validation');
+        Array.prototype.slice.call(forms).forEach(function(form) {
+            form.addEventListener('submit', function(event) {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        });
+    })();
+</script>
+{% endblock %}
+{% endblock %}

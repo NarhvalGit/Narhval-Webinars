@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Alle Categorieën | Workshop Platform{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container text-center">
+        <h1>
+            <i class="bi bi-grid-3x3-gap"></i> Ontdek Onze Categorieën
+        </h1>
+        <p class="lead mb-0">
+            Kies je interesse en vind de perfecte workshop voor jou
+        </p>
+    </div>
+</section>
+
+<!-- Categories Grid -->
+<section class="py-5">
+    <div class="container">
+        <div class="row g-4">
+            {% for category in categories %}
+            <div class="col-md-6 col-lg-4">
+                <a href="{% url 'category_detail' category.slug %}" class="text-decoration-none">
+                    <div class="card h-100 border-0 shadow-sm" style="transition: all 0.3s ease;">
+                        <div class="card-body text-center p-5">
+                            <div style="font-size: 5rem; margin-bottom: 1.5rem;">
+                                {% if 'hout' in category.naam.lower %}
+                                    🪵
+                                {% elif 'metaal' in category.naam.lower %}
+                                    🔨
+                                {% elif 'keramiek' in category.naam.lower %}
+                                    🏺
+                                {% elif 'textiel' in category.naam.lower %}
+                                    🧵
+                                {% elif 'elektron' in category.naam.lower %}
+                                    ⚡
+                                {% elif '3d' in category.naam.lower %}
+                                    🖨️
+                                {% else %}
+                                    🎨
+                                {% endif %}
+                            </div>
+                            <h3 class="mb-3">{{ category.naam }}</h3>
+                            {% if category.beschrijving %}
+                            <p class="text-muted mb-4">
+                                {{ category.beschrijving|truncatewords:20 }}
+                            </p>
+                            {% endif %}
+                            <div class="badge bg-primary fs-6 px-4 py-2">
+                                {{ category.workshop_count }} Workshop{% if category.workshop_count != 1 %}s{% endif %}
+                            </div>
+                        </div>
+                        <div class="card-footer bg-transparent border-0 text-center pb-4">
+                            <span class="btn btn-outline-custom">
+                                Bekijk Workshops <i class="bi bi-arrow-right"></i>
+                            </span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- CTA -->
+<section class="py-5 bg-light">
+    <div class="container text-center">
+        <h2 class="mb-3">Niet Gevonden Wat Je Zocht?</h2>
+        <p class="lead text-muted mb-4">
+            We voegen regelmatig nieuwe categorieën en workshops toe
+        </p>
+        <div>
+            <a href="{% url 'contact' %}" class="btn btn-primary-custom me-2">
+                <i class="bi bi-envelope"></i> Stel Een Workshop Voor
+            </a>
+            <a href="{% url 'workshop_list' %}" class="btn btn-outline-custom">
+                <i class="bi bi-calendar-event"></i> Bekijk Alle Workshops
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}

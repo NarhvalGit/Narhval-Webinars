@@ -1,0 +1,387 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ workshop.title }} | Narhval Learning{% endblock %}
+
+{% block content %}
+
+<!-- Workshop Header -->
+<section class="py-5 bg-white">
+    <div class="container">
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'workshop_list' %}">Workshops</a></li>
+                {% if workshop.category %}
+                <li class="breadcrumb-item">
+                    <a href="{% url 'workshop_list' %}?category={{ workshop.category.slug }}">
+                        {{ workshop.category.name }}
+                    </a>
+                </li>
+                {% endif %}
+                <li class="breadcrumb-item active" aria-current="page">{{ workshop.title }}</li>
+            </ol>
+        </nav>
+
+        <div class="row g-4">
+            <!-- Workshop Image -->
+            <div class="col-lg-8">
+                <div class="position-relative">
+                    {% if workshop.image %}
+                        <img src="{{ workshop.image.url }}" alt="{{ workshop.title }}" 
+                             class="img-fluid rounded-custom shadow-custom" style="width: 100%; height: 450px; object-fit: cover;">
+                    {% else %}
+                        <img src="https://via.placeholder.com/800x450/3b82f6/ffffff?text={{ workshop.title }}" 
+                             alt="{{ workshop.title }}" 
+                             class="img-fluid rounded-custom shadow-custom" style="width: 100%; height: 450px; object-fit: cover;">
+                    {% endif %}
+                    
+                    <!-- Status Badge -->
+                    <div style="position: absolute; top: 1.5rem; left: 1.5rem;">
+                        <span class="badge-status badge-{{ workshop.status }} shadow">
+                            {% if workshop.status == 'upcoming' %}
+                                Binnenkort
+                            {% elif workshop.status == 'active' %}
+                                Beschikbaar
+                            {% elif workshop.status == 'full' %}
+                                Volzet
+                            {% endif %}
+                        </span>
+                    </div>
+                    
+                    {% if workshop.featured %}
+                    <div class="badge-featured shadow">
+                        <i class="bi bi-star-fill me-1"></i>Uitgelicht
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Booking Card (Sticky) -->
+            <div class="col-lg-4">
+                <div class="card shadow-custom rounded-custom sticky-top" style="top: 100px;">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div>
+                                <h3 class="mb-0" style="color: var(--primary-color); font-weight: 700;">
+                                    €{{ workshop.price }}
+                                </h3>
+                                <small class="text-muted">per persoon</small>
+                            </div>
+                            {% if workshop.category %}
+                            <span class="workshop-category">{{ workshop.category.name }}</span>
+                            {% endif %}
+                        </div>
+
+                        <!-- Quick Info -->
+                        <div class="mb-4">
+                            <div class="d-flex align-items-center mb-3 pb-3 border-bottom">
+                                <i class="bi bi-calendar3 fs-5 me-3" style="color: var(--primary-color);"></i>
+                                <div>
+                                    <small class="text-muted d-block">Datum</small>
+                                    <strong>{{ workshop.start_datetime|date:"l d F Y" }}</strong>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-center mb-3 pb-3 border-bottom">
+                                <i class="bi bi-clock fs-5 me-3" style="color: var(--primary-color);"></i>
+                                <div>
+                                    <small class="text-muted d-block">Tijd & Duur</small>
+                                    <strong>{{ workshop.start_datetime|date:"H:i" }} - {{ workshop.end_datetime|date:"H:i" }}</strong>
+                                    <span class="text-muted ms-2">({{ workshop.duration_hours }}u)</span>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-center mb-3 pb-3 border-bottom">
+                                <i class="bi bi-geo-alt fs-5 me-3" style="color: var(--primary-color);"></i>
+                                <div>
+                                    <small class="text-muted d-block">Locatie</small>
+                                    <strong>{{ workshop.location }}</strong>
+                                    <br><small class="text-muted">{{ workshop.city }}</small>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-people fs-5 me-3" style="color: var(--primary-color);"></i>
+                                <div>
+                                    <small class="text-muted d-block">Beschikbare plaatsen</small>
+                                    <strong>{{ workshop.available_spots }} vrij</strong>
+                                    <div class="progress mt-2" style="height: 8px;">
+                                        {% widthratio workshop.available_spots workshop.max_participants 100 as percentage %}
+                                        <div class="progress-bar" role="progressbar" 
+                                             style="width: {{ percentage }}%; background-color: {% if percentage < 30 %}var(--danger-color){% elif percentage < 60 %}var(--warning-color){% else %}var(--success-color){% endif %};" 
+                                             aria-valuenow="{{ percentage }}" aria-valuemin="0" aria-valuemax="100">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Booking Button -->
+                        {% if workshop.status == 'full' %}
+                            <button class="btn btn-secondary btn-lg w-100 mb-3" disabled>
+                                <i class="bi bi-x-circle me-2"></i>Volzet
+                            </button>
+                        {% elif workshop.status == 'cancelled' %}
+                            <button class="btn btn-danger btn-lg w-100 mb-3" disabled>
+                                <i class="bi bi-x-octagon me-2"></i>Geannuleerd
+                            </button>
+                        {% elif workshop.status == 'completed' %}
+                            <button class="btn btn-secondary btn-lg w-100 mb-3" disabled>
+                                <i class="bi bi-check-circle me-2"></i>Afgelopen
+                            </button>
+                        {% else %}
+                            <a href="{% url 'workshop_booking' workshop.slug %}" class="btn btn-primary btn-lg w-100 mb-3">
+                                <i class="bi bi-calendar-check me-2"></i>Nu Boeken
+                            </a>
+                        {% endif %}
+
+                        <!-- Features -->
+                        <div class="d-flex flex-wrap gap-2 text-center small">
+                            {% if workshop.materials_included %}
+                            <div class="flex-fill">
+                                <i class="bi bi-box-seam text-success d-block mb-1"></i>
+                                <small class="text-muted">Materialen inbegrepen</small>
+                            </div>
+                            {% endif %}
+                            <div class="flex-fill">
+                                <i class="bi bi-award text-primary d-block mb-1"></i>
+                                <small class="text-muted">Certificaat</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Workshop Details -->
+<section class="py-5">
+    <div class="container">
+        <div class="row g-4">
+            <!-- Main Content -->
+            <div class="col-lg-8">
+                <!-- Title & Short Info -->
+                <h1 class="mb-3" style="font-weight: 700;">
+                    {{ workshop.title }}
+                </h1>
+                {% if workshop.short_description %}
+                <p class="lead text-muted-custom mb-4">{{ workshop.short_description }}</p>
+                {% endif %}
+
+                <!-- Tabs -->
+                <ul class="nav nav-tabs mb-4" id="workshopTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="beschrijving-tab" data-bs-toggle="tab" 
+                                data-bs-target="#beschrijving" type="button" role="tab">
+                            <i class="bi bi-info-circle me-2"></i>Beschrijving
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="programma-tab" data-bs-toggle="tab" 
+                                data-bs-target="#programma" type="button" role="tab">
+                            <i class="bi bi-list-check me-2"></i>Programma
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="instructeur-tab" data-bs-toggle="tab" 
+                                data-bs-target="#instructeur" type="button" role="tab">
+                            <i class="bi bi-person me-2"></i>Instructeur
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="reviews-tab" data-bs-toggle="tab" 
+                                data-bs-target="#reviews" type="button" role="tab">
+                            <i class="bi bi-star me-2"></i>Reviews ({{ workshop.reviews.count }})
+                        </button>
+                    </li>
+                </ul>
+
+                <!-- Tab Content -->
+                <div class="tab-content" id="workshopTabsContent">
+                    <!-- Beschrijving -->
+                    <div class="tab-pane fade show active" id="beschrijving" role="tabpanel">
+                        <div class="card border-0 bg-light-custom p-4 rounded-custom">
+                            <h4 class="mb-3">Over deze workshop</h4>
+                            <p style="white-space: pre-line;">{{ workshop.description }}</p>
+                            
+                            {% if workshop.what_to_bring %}
+                            <hr class="my-4">
+                            <h5><i class="bi bi-bag me-2"></i>Wat meenemen?</h5>
+                            <p style="white-space: pre-line;">{{ workshop.what_to_bring }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Programma -->
+                    <div class="tab-pane fade" id="programma" role="tabpanel">
+                        <div class="card border-0 bg-light-custom p-4 rounded-custom">
+                            <h4 class="mb-3">Vereisten</h4>
+                            {% if workshop.requirements %}
+                                <p style="white-space: pre-line;">{{ workshop.requirements }}</p>
+                            {% else %}
+                                <p class="text-muted">
+                                    <i class="bi bi-check-circle text-success me-2"></i>
+                                    Geen specifieke vereisten. Deze workshop is geschikt voor beginners!
+                                </p>
+                            {% endif %}
+
+                            <hr class="my-4">
+                            
+                            <h5 class="mb-3">Praktische informatie</h5>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <div class="d-flex align-items-start">
+                                        <i class="bi bi-people-fill fs-4 me-3 text-primary"></i>
+                                        <div>
+                                            <strong>Deelnemers</strong>
+                                            <p class="mb-0 text-muted">
+                                                Min. {{ workshop.min_participants }} - Max. {{ workshop.max_participants }} personen
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="d-flex align-items-start">
+                                        <i class="bi bi-clock-fill fs-4 me-3 text-primary"></i>
+                                        <div>
+                                            <strong>Duur</strong>
+                                            <p class="mb-0 text-muted">{{ workshop.duration_hours }} uur</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Instructeur -->
+                    <div class="tab-pane fade" id="instructeur" role="tabpanel">
+                        <div class="card border-0 bg-light-custom p-4 rounded-custom">
+                            <div class="d-flex align-items-start">
+                                <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3"
+                                     style="width: 80px; height: 80px; font-size: 2rem; flex-shrink: 0;">
+                                    <i class="bi bi-person"></i>
+                                </div>
+                                <div>
+                                    <h4 class="mb-2">{{ workshop.instructor_name }}</h4>
+                                    {% if workshop.instructor_bio %}
+                                        <p style="white-space: pre-line;">{{ workshop.instructor_bio }}</p>
+                                    {% else %}
+                                        <p class="text-muted">Ervaren instructeur met passie voor onderwijs.</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Reviews -->
+                    <div class="tab-pane fade" id="reviews" role="tabpanel">
+                        {% if workshop.reviews.all %}
+                            {% for review in workshop.reviews.all %}
+                            <div class="card border-0 bg-light-custom p-4 rounded-custom mb-3">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <div>
+                                        <h6 class="mb-1">{{ review.user.get_full_name|default:review.user.username }}</h6>
+                                        <div class="text-warning mb-2">
+                                            {% for i in "12345" %}
+                                                {% if forloop.counter <= review.rating %}
+                                                    <i class="bi bi-star-fill"></i>
+                                                {% else %}
+                                                    <i class="bi bi-star"></i>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    <small class="text-muted">{{ review.created_at|date:"d M Y" }}</small>
+                                </div>
+                                <h6>{{ review.title }}</h6>
+                                <p class="mb-0">{{ review.comment }}</p>
+                            </div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="text-center py-5">
+                                <i class="bi bi-chat-square-text display-1 text-muted"></i>
+                                <h5 class="mt-3">Nog geen reviews</h5>
+                                <p class="text-muted">Wees de eerste om deze workshop te reviewen!</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Location Map -->
+                {% if workshop.address %}
+                <div class="card shadow-custom rounded-custom mb-4">
+                    <div class="card-body p-4">
+                        <h5 class="mb-3">
+                            <i class="bi bi-geo-alt-fill me-2"></i>Locatie
+                        </h5>
+                        <p class="mb-2"><strong>{{ workshop.location }}</strong></p>
+                        <p class="text-muted mb-3">
+                            {{ workshop.address }}<br>
+                            {{ workshop.city }}
+                        </p>
+                        <a href="https://www.google.com/maps/search/?api=1&query={{ workshop.address }}, {{ workshop.city }}" 
+                           target="_blank" class="btn btn-outline-primary btn-sm w-100">
+                            <i class="bi bi-map me-2"></i>Open in Google Maps
+                        </a>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Share -->
+                <div class="card shadow-custom rounded-custom">
+                    <div class="card-body p-4">
+                        <h5 class="mb-3">
+                            <i class="bi bi-share-fill me-2"></i>Delen
+                        </h5>
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-outline-primary btn-sm">
+                                <i class="bi bi-facebook me-2"></i>Deel op Facebook
+                            </button>
+                            <button class="btn btn-outline-info btn-sm">
+                                <i class="bi bi-twitter me-2"></i>Deel op Twitter
+                            </button>
+                            <button class="btn btn-outline-success btn-sm">
+                                <i class="bi bi-whatsapp me-2"></i>Deel via WhatsApp
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Related Workshops -->
+{% if related_workshops %}
+<section class="py-5 bg-light-custom">
+    <div class="container">
+        <h3 class="mb-4">Vergelijkbare Workshops</h3>
+        <div class="row g-4">
+            {% for related in related_workshops %}
+            <div class="col-md-6 col-lg-4">
+                <div class="workshop-card">
+                    <img src="{% if related.image %}{{ related.image.url }}{% else %}https://via.placeholder.com/400x220/3b82f6/ffffff?text={{ related.title|truncatewords:2 }}{% endif %}" 
+                         alt="{{ related.title }}" class="workshop-card-img">
+                    <div class="workshop-card-body">
+                        <span class="workshop-category">{{ related.category.name }}</span>
+                        <h5 class="workshop-card-title">
+                            <a href="{% url 'workshop_detail' related.slug %}" class="text-decoration-none">
+                                {{ related.title }}
+                            </a>
+                        </h5>
+                        <div class="workshop-price">
+                            €{{ related.price }}
+                            <small>/ persoon</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{% endblock %}

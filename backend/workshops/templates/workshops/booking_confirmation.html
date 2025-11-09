@@ -1,0 +1,225 @@
+{% extends 'base.html' %}
+
+{% block title %}Boeking Bevestigd | Narhval Learning{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <!-- Success Header -->
+            <div class="text-center mb-5">
+                <div class="mb-4">
+                    <i class="bi bi-check-circle-fill text-success" style="font-size: 5rem;"></i>
+                </div>
+                <h1 class="display-4 fw-bold text-success mb-3">Boeking Succesvol!</h1>
+                <p class="lead text-muted">
+                    Je workshop is succesvol geboekt. We hebben een bevestigingsmail naar je gestuurd.
+                </p>
+            </div>
+
+            <!-- Booking Details Card -->
+            <div class="card shadow-lg border-0 mb-4">
+                <div class="card-header bg-primary text-white py-3">
+                    <h4 class="mb-0">
+                        <i class="bi bi-receipt"></i> Boekingsgegevens
+                    </h4>
+                </div>
+                <div class="card-body p-4">
+                    <!-- Booking Reference -->
+                    <div class="alert alert-info">
+                        <div class="row align-items-center">
+                            <div class="col-md-6">
+                                <strong>Boekingsreferentie:</strong>
+                            </div>
+                            <div class="col-md-6 text-md-end">
+                                <span class="badge bg-dark fs-5">{{ booking.booking_reference }}</span>
+                            </div>
+                        </div>
+                        <small class="d-block mt-2">
+                            <i class="bi bi-info-circle"></i> Bewaar deze referentie voor je administratie
+                        </small>
+                    </div>
+
+                    <!-- Contact Info -->
+                    <div class="mb-4">
+                        <h5 class="border-bottom pb-2 mb-3">
+                            <i class="bi bi-person-circle"></i> Contactgegevens
+                        </h5>
+                        <div class="row">
+                            <div class="col-md-6 mb-2">
+                                <strong>Naam:</strong><br>
+                                {{ booking.name }}
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <strong>Email:</strong><br>
+                                {{ booking.email }}
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <strong>Telefoon:</strong><br>
+                                {{ booking.phone }}
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <strong>Aantal deelnemers:</strong><br>
+                                {{ booking.num_participants }} {% if booking.num_participants == 1 %}persoon{% else %}personen{% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Workshop Info -->
+                    <div class="mb-4">
+                        <h5 class="border-bottom pb-2 mb-3">
+                            <i class="bi bi-calendar-event"></i> Workshop Details
+                        </h5>
+                        
+                        <div class="row align-items-center mb-3">
+                            {% if workshop.image %}
+                            <div class="col-md-4">
+                                <img src="{{ workshop.image.url }}" class="img-fluid rounded" alt="{{ workshop.title }}">
+                            </div>
+                            {% endif %}
+                            <div class="{% if workshop.image %}col-md-8{% else %}col-md-12{% endif %}">
+                                <h6 class="fw-bold">{{ workshop.title }}</h6>
+                                <p class="text-muted mb-2">
+                                    <span class="badge bg-secondary">{{ workshop.category.name }}</span>
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="info-item">
+                            <i class="bi bi-calendar-check"></i>
+                            <span><strong>Datum:</strong> {{ workshop.start_datetime|date:"l j F Y" }}</span>
+                        </div>
+                        
+                        <div class="info-item">
+                            <i class="bi bi-clock"></i>
+                            <span><strong>Tijd:</strong> {{ workshop.start_datetime|date:"H:i" }} - {{ workshop.end_datetime|date:"H:i" }}</span>
+                        </div>
+                        
+                        <div class="info-item">
+                            <i class="bi bi-hourglass"></i>
+                            <span><strong>Duur:</strong> {{ workshop.duration_hours }} uur</span>
+                        </div>
+                        
+                        <div class="info-item">
+                            <i class="bi bi-geo-alt"></i>
+                            <span><strong>Locatie:</strong> {{ workshop.location }}, {{ workshop.address }}, {{ workshop.city }}</span>
+                        </div>
+
+                        {% if workshop.instructor_name %}
+                        <div class="info-item">
+                            <i class="bi bi-person-badge"></i>
+                            <span><strong>Instructeur:</strong> {{ workshop.instructor_name }}</span>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Payment Info -->
+                    <div class="mb-4">
+                        <h5 class="border-bottom pb-2 mb-3">
+                            <i class="bi bi-cash-stack"></i> Betaling
+                        </h5>
+                        
+                        <div class="row">
+                            <div class="col-6">
+                                <p class="mb-1">Prijs per persoon:</p>
+                                <p class="mb-1">Aantal personen:</p>
+                                <hr class="my-2">
+                                <p class="mb-0 fw-bold fs-5">Totaalbedrag:</p>
+                            </div>
+                            <div class="col-6 text-end">
+                                <p class="mb-1">€{{ workshop.price }}</p>
+                                <p class="mb-1">× {{ booking.num_participants }}</p>
+                                <hr class="my-2">
+                                <p class="mb-0 fw-bold fs-5 text-primary">€{{ booking.total_price }}</p>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-warning mt-3">
+                            <i class="bi bi-exclamation-triangle"></i>
+                            <strong>Betaling:</strong> Je ontvangt binnen 24 uur een betalingslink via email. 
+                            Je boeking wordt definitief na ontvangst van de betaling.
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>Status:</span>
+                            <span class="badge bg-warning text-dark">
+                                <i class="bi bi-clock-history"></i> In afwachting van betaling
+                            </span>
+                        </div>
+                    </div>
+
+                    {% if booking.notes %}
+                    <div class="mb-3">
+                        <h5 class="border-bottom pb-2 mb-3">
+                            <i class="bi bi-chat-left-text"></i> Opmerkingen
+                        </h5>
+                        <p class="text-muted">{{ booking.notes }}</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Next Steps -->
+            <div class="card border-primary mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-list-check"></i> Volgende Stappen
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <ol class="mb-0">
+                        <li class="mb-2">
+                            <strong>Bevestigingsmail:</strong> Check je inbox (en spam folder) voor de bevestigingsmail.
+                        </li>
+                        <li class="mb-2">
+                            <strong>Betaling:</strong> Je ontvangt binnen 24 uur een betalingslink via email.
+                        </li>
+                        <li class="mb-2">
+                            <strong>Definitieve bevestiging:</strong> Na betaling ontvang je de definitieve bevestiging.
+                        </li>
+                        <li class="mb-2">
+                            <strong>Herinnering:</strong> We sturen je 1 dag voor de workshop nog een herinnering.
+                        </li>
+                        {% if workshop.what_to_bring %}
+                        <li class="mb-0">
+                            <strong>Meebrengen:</strong> {{ workshop.what_to_bring }}
+                        </li>
+                        {% endif %}
+                    </ol>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                <a href="{% url 'workshop_list' %}" class="btn btn-outline-primary btn-lg">
+                    <i class="bi bi-arrow-left"></i> Bekijk andere workshops
+                </a>
+                <button onclick="window.print()" class="btn btn-secondary btn-lg">
+                    <i class="bi bi-printer"></i> Print bevestiging
+                </button>
+            </div>
+
+            <!-- Support Info -->
+            <div class="text-center mt-4 p-3 bg-light rounded">
+                <p class="mb-2">
+                    <i class="bi bi-question-circle"></i> 
+                    <strong>Vragen over je boeking?</strong>
+                </p>
+                <p class="mb-0 text-muted">
+                    Neem contact op via <a href="mailto:info@workshop-platform.be">info@workshop-platform.be</a> 
+                    of bel <a href="tel:+3291234567">+32 9 123 45 67</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    @media print {
+        .navbar, .footer, .btn { display: none !important; }
+        .card { border: 1px solid #ddd !important; }
+    }
+</style>
+{% endblock %}

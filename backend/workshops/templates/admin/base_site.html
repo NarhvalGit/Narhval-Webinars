@@ -1,0 +1,25 @@
+{% extends "admin/base.html" %}
+
+{% block extrahead %}
+{{ block.super }}
+<style>
+    /* Force light mode */
+    :root {
+        color-scheme: light !important;
+    }
+    
+    /* Override dark mode styles */
+    [data-theme="dark"] {
+        display: none !important;
+    }
+</style>
+<script>
+    // Force light mode
+    document.addEventListener('DOMContentLoaded', function() {
+        if (localStorage.getItem('admin-theme')) {
+            localStorage.setItem('admin-theme', 'light');
+        }
+        document.documentElement.setAttribute('data-theme', 'light');
+    });
+</script>
+{% endblock %}

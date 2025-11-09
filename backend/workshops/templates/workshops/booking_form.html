@@ -1,0 +1,225 @@
+{% extends 'base.html' %}
+
+{% block title %}Boek {{ workshop.title }} | Narhval Learning{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row">
+        <!-- Booking Form -->
+        <div class="col-lg-8">
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-4">
+                    <h2 class="mb-4">
+                        <i class="bi bi-calendar-check text-primary"></i> 
+                        Boek je workshop
+                    </h2>
+                    
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle"></i>
+                        <strong>Let op:</strong> Je boeking wordt pas definitief na bevestiging door de organisator en betaling.
+                    </div>
+
+                    <form method="post" id="bookingForm">
+                        {% csrf_token %}
+                        
+                        <!-- Persoonlijke gegevens -->
+                        <div class="card mb-4">
+                            <div class="card-header bg-light">
+                                <h5 class="mb-0">
+                                    <i class="bi bi-person"></i> Persoonlijke Gegevens
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="{{ form.name.id_for_label }}" class="form-label">
+                                        {{ form.name.label }} <span class="text-danger">*</span>
+                                    </label>
+                                    {{ form.name }}
+                                    {% if form.name.errors %}
+                                        <div class="text-danger small mt-1">{{ form.name.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="{{ form.email.id_for_label }}" class="form-label">
+                                            {{ form.email.label }} <span class="text-danger">*</span>
+                                        </label>
+                                        {{ form.email }}
+                                        {% if form.email.errors %}
+                                            <div class="text-danger small mt-1">{{ form.email.errors.0 }}</div>
+                                        {% endif %}
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label for="{{ form.phone.id_for_label }}" class="form-label">
+                                            {{ form.phone.label }} <span class="text-danger">*</span>
+                                        </label>
+                                        {{ form.phone }}
+                                        {% if form.phone.errors %}
+                                            <div class="text-danger small mt-1">{{ form.phone.errors.0 }}</div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Booking details -->
+                        <div class="card mb-4">
+                            <div class="card-header bg-light">
+                                <h5 class="mb-0">
+                                    <i class="bi bi-people"></i> Aantal Deelnemers
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="{{ form.num_participants.id_for_label }}" class="form-label">
+                                        {{ form.num_participants.label }} <span class="text-danger">*</span>
+                                    </label>
+                                    {{ form.num_participants }}
+                                    {% if form.num_participants.help_text %}
+                                        <div class="form-text">{{ form.num_participants.help_text }}</div>
+                                    {% endif %}
+                                    {% if form.num_participants.errors %}
+                                        <div class="text-danger small mt-1">{{ form.num_participants.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+
+                                <!-- Live price calculation -->
+                                <div class="alert alert-success" id="priceCalculation">
+                                    <strong>Totaalprijs:</strong> 
+                                    <span class="fs-4" id="totalPrice">€{{ workshop.price }}</span>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="{{ form.notes.id_for_label }}" class="form-label">
+                                        {{ form.notes.label }}
+                                    </label>
+                                    {{ form.notes }}
+                                    {% if form.notes.errors %}
+                                        <div class="text-danger small mt-1">{{ form.notes.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Algemene voorwaarden -->
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <div class="form-check">
+                                    {{ form.accept_terms }}
+                                    <label class="form-check-label" for="{{ form.accept_terms.id_for_label }}">
+                                        {{ form.accept_terms.label }} <span class="text-danger">*</span>
+                                        <a href="#" class="text-primary">Lees de voorwaarden</a>
+                                    </label>
+                                    {% if form.accept_terms.errors %}
+                                        <div class="text-danger small mt-1">{{ form.accept_terms.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Submit buttons -->
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-between">
+                            <a href="{% url 'workshop_detail' workshop.slug %}" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left"></i> Terug naar workshop
+                            </a>
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="bi bi-check-circle"></i> Bevestig Boeking
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Workshop Summary Sidebar -->
+        <div class="col-lg-4">
+            <div class="card shadow-sm border-0 sticky-top" style="top: 90px;">
+                <div class="card-body">
+                    <h5 class="card-title mb-3">Workshop Overzicht</h5>
+                    
+                    {% if workshop.image %}
+                    <img src="{{ workshop.image.url }}" class="card-img-top rounded mb-3" alt="{{ workshop.title }}">
+                    {% endif %}
+                    
+                    <h6 class="fw-bold">{{ workshop.title }}</h6>
+                    <p class="text-muted small mb-3">{{ workshop.category.name }}</p>
+                    
+                    <hr>
+                    
+                    <div class="info-item">
+                        <i class="bi bi-calendar-event"></i>
+                        <span>{{ workshop.start_datetime|date:"j F Y" }}</span>
+                    </div>
+                    
+                    <div class="info-item">
+                        <i class="bi bi-clock"></i>
+                        <span>{{ workshop.start_datetime|date:"H:i" }} - {{ workshop.end_datetime|date:"H:i" }}</span>
+                    </div>
+                    
+                    <div class="info-item">
+                        <i class="bi bi-hourglass"></i>
+                        <span>{{ workshop.duration_hours }} uur</span>
+                    </div>
+                    
+                    <div class="info-item">
+                        <i class="bi bi-geo-alt"></i>
+                        <span>{{ workshop.location }}, {{ workshop.city }}</span>
+                    </div>
+                    
+                    <div class="info-item">
+                        <i class="bi bi-people"></i>
+                        <span>{{ workshop.available_spots }} plaatsen beschikbaar</span>
+                    </div>
+                    
+                    <hr>
+                    
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="text-muted">Prijs per persoon:</span>
+                        <span class="price-badge">€{{ workshop.price }}</span>
+                    </div>
+                    
+                    {% if workshop.materials_included %}
+                    <div class="alert alert-info mt-3 small">
+                        <i class="bi bi-box-seam"></i> Materialen inbegrepen
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Live price calculation
+document.addEventListener('DOMContentLoaded', function() {
+    const numParticipantsInput = document.getElementById('{{ form.num_participants.id_for_label }}');
+    const totalPriceSpan = document.getElementById('totalPrice');
+    const pricePerPerson = {{ workshop.price }};
+    
+    if (numParticipantsInput && totalPriceSpan) {
+        numParticipantsInput.addEventListener('input', function() {
+            const numParticipants = parseInt(this.value) || 1;
+            const totalPrice = numParticipants * pricePerPerson;
+            totalPriceSpan.textContent = '€' + totalPrice.toFixed(2);
+        });
+    }
+    
+    // Form validation
+    const form = document.getElementById('bookingForm');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            const acceptTerms = document.getElementById('{{ form.accept_terms.id_for_label }}');
+            if (acceptTerms && !acceptTerms.checked) {
+                e.preventDefault();
+                alert('Je moet akkoord gaan met de algemene voorwaarden.');
+                return false;
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

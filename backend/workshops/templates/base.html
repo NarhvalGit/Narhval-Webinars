@@ -1,0 +1,229 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="nl-BE">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Narhval Learning{% endblock %}</title>
+    
+    
+    
+    <!-- Favicon (MOET NA Bootstrap Icons komen!) -->
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'workshops/favicon.png' %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'workshops/favicon.png' %}">
+    <link rel="shortcut icon" href="{% static 'workshops/favicon.png' %}">
+    <link rel="apple-touch-icon" href="{% static 'workshops/favicon.png' %}">
+    
+    
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    
+    
+    
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+    
+    
+    <!-- Google Fonts - Professional Typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'workshops/css/style.css' %}">
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold text-primary" href="{% url 'workshops:workshop_list' %}">
+                <i class="bi bi-mortarboard me-2"></i>Narhval Learning 
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'workshops:workshop_list' %}#workshops">Workshops</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'workshops:about' %}">Over Ons</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'workshops:contact' %}">Contact</a>
+                    </li>
+                    {% if user.is_authenticated %}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                                <i class="bi bi-person-circle me-1"></i>{{ user.username }}
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="#mijn-boekingen">Mijn Boekingen</a></li>
+                                {% if user.is_staff %}
+                                    <li><a class="dropdown-item" href="/admin/">Admin Panel</a></li>
+                                {% endif %}
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="#logout">Uitloggen</a></li>
+                            </ul>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="#login">Inloggen</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="btn btn-primary btn-sm ms-2" href="#registreer">Registreer</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Messages -->
+    {% if messages %}
+        <div class="container mt-3">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <!-- Main Content -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white mt-5">
+        <div class="container py-5">
+            <div class="row">
+                <div class="col-lg-3 mb-4 mb-lg-0">
+                    <h5 class="fw-bold mb-3">Narhval Learning</h5>
+                    <p class="text-white-50">
+                        Wij bieden workshops om effectief AI om te zetten in ROI
+                    </p>
+                    <div class="social-links mt-3">
+                        <a href="#" class="text-white me-3" title="Facebook"><i class="bi bi-facebook fs-5"></i></a>
+                        <a href="#" class="text-white me-3" title="Instagram"><i class="bi bi-instagram fs-5"></i></a>
+                        <a href="#" class="text-white me-3" title="LinkedIn"><i class="bi bi-linkedin fs-5"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-6 mb-4 mb-lg-0">
+                    <h6 class="fw-bold mb-3">Workshops</h6>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="{% url 'workshops:workshop_list' %}" class="text-white-50 text-decoration-none hover-white">Alle Workshops</a></li>
+                        <li class="mb-2"><a href="{% url 'workshops:workshop_list' %}#workshops" class="text-white-50 text-decoration-none hover-white">Categorieën</a></li>
+                        <li class="mb-2"><a href="{% url 'workshops:newsletter_subscribe' %}" class="text-white-50 text-decoration-none hover-white">Nieuwsbrief</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-2 col-md-6 mb-4 mb-lg-0">
+                    <h6 class="fw-bold mb-3">Bedrijf</h6>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="{% url 'workshops:about' %}" class="text-white-50 text-decoration-none hover-white">Over Ons</a></li>
+                        <li class="mb-2"><a href="{% url 'workshops:contact' %}" class="text-white-50 text-decoration-none hover-white">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-2 col-md-6 mb-4 mb-lg-0">
+                    <h6 class="fw-bold mb-3">Juridisch</h6>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="{% url 'workshops:terms_conditions' %}" class="text-white-50 text-decoration-none hover-white">Algemene Voorwaarden</a></li>
+                        <li class="mb-2"><a href="{% url 'workshops:privacy_policy' %}" class="text-white-50 text-decoration-none hover-white">Privacy Policy</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <h6 class="fw-bold mb-3">Contact</h6>
+                    <ul class="list-unstyled text-white-50">
+                        <li class="mb-2"><i class="bi bi-geo-alt me-2"></i>Kortrijk, België</li>
+                        <li class="mb-2">
+                            <a href="mailto:Christophe@narhval.be" class="text-white-50 text-decoration-none hover-white">
+                                <i class="bi bi-envelope me-2"></i>Christophe@narhval.be
+                            </a>
+                        </li>
+                        <li class="mb-2">
+                            <a href="tel:+32471321175" class="text-white-50 text-decoration-none hover-white">
+                                <i class="bi bi-telephone me-2"></i>+32 471 32 11 75
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="my-4 bg-white-50">
+            <div class="row">
+                <div class="col-md-6 text-center text-md-start">
+                    <small class="text-white-50">© 2025 Narhval. Alle rechten voorbehouden.</small>
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    <small class="text-white-50">Powered by Narhval Technology</small>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Smooth Scroll Script -->
+    <script>
+        // Smooth scroll naar anchor op de huidige pagina
+        document.addEventListener('DOMContentLoaded', function() {
+            // Als de URL een hash heeft, scroll dan naar die sectie
+            if (window.location.hash) {
+                const target = document.querySelector(window.location.hash);
+                if (target) {
+                    setTimeout(function() {
+                        const offsetTop = target.offsetTop - 80; // 80px voor sticky navbar
+                        window.scrollTo({
+                            top: offsetTop,
+                            behavior: 'smooth'
+                        });
+                    }, 100);
+                }
+            }
+            
+            // Smooth scroll voor alle anchor links op dezelfde pagina
+            document.querySelectorAll('a[href*="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    const href = this.getAttribute('href');
+                    
+                    // Skip als het alleen # is
+                    if (href === '#' || !href) {
+                        return;
+                    }
+                    
+                    // Check of de link naar de huidige pagina is (met anchor)
+                    const [url, hash] = href.split('#');
+                    const currentUrl = window.location.pathname;
+                    
+                    // Als het een anchor op de huidige pagina is
+                    if ((!url || url === currentUrl) && hash) {
+                        const target = document.getElementById(hash);
+                        if (target) {
+                            e.preventDefault();
+                            const offsetTop = target.offsetTop - 80; // 80px voor sticky navbar
+                            
+                            window.scrollTo({
+                                top: offsetTop,
+                                behavior: 'smooth'
+                            });
+                            
+                            // Update URL zonder page reload
+                            history.pushState(null, null, '#' + hash);
+                        }
+                    }
+                    // Anders laat de normale link werken (naar andere pagina met anchor)
+                });
+            });
+        });
+    </script>
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

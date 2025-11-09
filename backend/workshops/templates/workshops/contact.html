@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Contact | Narhval Learning{% endblock %}
+
+{% block content %}
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <div class="text-center mb-5">
+                    <h1><i class="bi bi-envelope"></i> Neem Contact Op</h1>
+                    <p class="lead text-muted">
+                        Heb je vragen? We helpen je graag verder!
+                    </p>
+                </div>
+
+                <div class="row g-4 mb-5">
+                    <div class="col-md-4">
+                        <div class="card text-center h-100 border-0 shadow-sm">
+                            <div class="card-body p-4">
+                                <i class="bi bi-geo-alt-fill text-primary display-4 mb-3"></i>
+                                <h5>Locatie</h5>
+                                <p class="text-muted">
+                                    Gent, België<br>
+                                    9000 Gent
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card text-center h-100 border-0 shadow-sm">
+                            <div class="card-body p-4">
+                                <i class="bi bi-envelope-fill text-primary display-4 mb-3"></i>
+                                <h5>Email</h5>
+                                <p class="text-muted">
+                                    info@workshop-platform.be<br>
+                                    support@workshop-platform.be
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card text-center h-100 border-0 shadow-sm">
+                            <div class="card-body p-4">
+                                <i class="bi bi-telephone-fill text-primary display-4 mb-3"></i>
+                                <h5>Telefoon</h5>
+                                <p class="text-muted">
+                                    +32 9 123 45 67<br>
+                                    Ma-Vr: 9:00 - 18:00
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card border-0 shadow">
+                    <div class="card-body p-5">
+                        <h3 class="mb-4">Stuur Ons Een Bericht</h3>
+                        <form>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Naam *</label>
+                                    <input type="text" class="form-control" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Email *</label>
+                                    <input type="email" class="form-control" required>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label">Onderwerp *</label>
+                                    <input type="text" class="form-control" required>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label">Bericht *</label>
+                                    <textarea class="form-control" rows="6" required></textarea>
+                                </div>
+                                <div class="col-12">
+                                    <button type="submit" class="btn btn-primary-custom">
+                                        <i class="bi bi-send"></i> Verstuur Bericht
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
