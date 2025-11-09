@@ -11,10 +11,10 @@
         <!-- Breadcrumb -->
         <nav aria-label="breadcrumb" class="mb-4">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{% url 'workshop_list' %}">Workshops</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'workshops:workshop_list' %}">Workshops</a></li>
                 {% if workshop.category %}
                 <li class="breadcrumb-item">
-                    <a href="{% url 'workshop_list' %}?category={{ workshop.category.slug }}">
+                    <a href="{% url 'workshops:workshop_list' %}?category={{ workshop.category.slug }}">
                         {{ workshop.category.name }}
                     </a>
                 </li>
@@ -128,7 +128,7 @@
                                 <i class="bi bi-check-circle me-2"></i>Afgelopen
                             </button>
                         {% else %}
-                            <a href="{% url 'workshop_booking' workshop.slug %}" class="btn btn-primary btn-lg w-100 mb-3">
+                            <a href="{% url 'workshops:workshop_booking' workshop.slug %}" class="btn btn-primary btn-lg w-100 mb-3">
                                 <i class="bi bi-calendar-check me-2"></i>Nu Boeken
                             </a>
                         {% endif %}
@@ -367,7 +367,7 @@
                     <div class="workshop-card-body">
                         <span class="workshop-category">{{ related.category.name }}</span>
                         <h5 class="workshop-card-title">
-                            <a href="{% url 'workshop_detail' related.slug %}" class="text-decoration-none">
+                            <a href="{% url 'workshops:workshop_detail' related.slug %}" class="text-decoration-none">
                                 {{ related.title }}
                             </a>
                         </h5>
