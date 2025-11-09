@@ -22,7 +22,7 @@
         <div class="row g-4">
             {% for category in categories %}
             <div class="col-md-6 col-lg-4">
-                <a href="{% url 'category_detail' category.slug %}" class="text-decoration-none">
+                <a href="{% url 'workshops:category_detail' category.slug %}" class="text-decoration-none">
                     <div class="card h-100 border-0 shadow-sm" style="transition: all 0.3s ease;">
                         <div class="card-body text-center p-5">
                             <div style="font-size: 5rem; margin-bottom: 1.5rem;">
@@ -73,10 +73,10 @@
             We voegen regelmatig nieuwe categorieën en workshops toe
         </p>
         <div>
-            <a href="{% url 'contact' %}" class="btn btn-primary-custom me-2">
+            <a href="{% url 'workshops:contact' %}" class="btn btn-primary-custom me-2">
                 <i class="bi bi-envelope"></i> Stel Een Workshop Voor
             </a>
-            <a href="{% url 'workshop_list' %}" class="btn btn-outline-custom">
+            <a href="{% url 'workshops:workshop_list' %}" class="btn btn-outline-custom">
                 <i class="bi bi-calendar-event"></i> Bekijk Alle Workshops
             </a>
         </div>
